@@ -1,1 +1,76 @@
-﻿// @include "node_modules/lodash.assign/index.js"(function(glob, app, undef) {  if (!Function.prototype.bind) {    Function.prototype.bind = function(oThis) {      if (typeof this !== 'function') {      // closest thing possible to the ECMAScript 5      // internal IsCallable function        throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');      }      var aArgs = Array.prototype.slice.call(arguments, 1),        fToBind = this,        fNOP = function() {},        fBound = function() {          return fToBind.apply(this instanceof fNOP                 ? this                 : oThis,                 aArgs.concat(Array.prototype.slice.call(arguments)));        };      if (this.prototype) {      // Function.prototype doesn't have a prototype property        fNOP.prototype = this.prototype;      }      fBound.prototype = new fNOP();      return fBound;    };  }  /**   * @class b   * @static   */  var pub = {};  pub._setup = null;  pub._draw = null;  var init = function() {    glob.b = pub;    // -- init internal state vars --  };  var runSetup = function() {    app.doScript(function() {      if (typeof pub._setup === 'function') {        pub._setup();      }    }, ScriptLanguage.javascript, undef, UndoModes.ENTIRE_SCRIPT);  };  var runDrawOnce = function() {    app.doScript(function() {      if (typeof pub._draw === 'function') {        pub._draw();      }    }, ScriptLanguage.javascript, undef, UndoModes.ENTIRE_SCRIPT);  };  pub.foo = function() {    $.writeln('hello from foo');  };  pub.go = function() {    try {      if (typeof glob.setup === 'function') {        pub._setup = glob.setup;        // for(p in pub) {        //   if (pub.hasOwnProperty(p)) {        //     $.writeln('trying to add ' + p + ' to global scope of setup');        //     glob.setup[p] = pub[p];        //   }        // }        runSetup();      }      if (typeof glob.draw === 'function') {        pub._draw = glob.draw;        runDrawOnce();      }    } catch (e) {      alert(e);      exit();    }  };  init();})(this, app);function setup() {  $.writeln('setup');  foo();  }function draw() {  $.writeln('draw');}b.go();
+// @include "node_modules/lodash.assign/index.js"
+
+(function(glob, app, undef) {
+
+  /**
+   * @class b
+   * @static
+   */
+  var pub = {};
+
+  pub._setup = null;
+  pub._draw = null;
+  var init = function() {
+    glob.b = pub;
+    // -- init internal state vars --
+  };
+  var runSetup = function() {
+    app.doScript(function() {
+      if (typeof pub._setup === 'function') {
+        pub._setup();
+      }
+    }, ScriptLanguage.javascript, undef, UndoModes.ENTIRE_SCRIPT);
+  };
+  var runDrawOnce = function() {
+    app.doScript(function() {
+      if (typeof pub._draw === 'function') {
+        pub._draw();
+      }
+    }, ScriptLanguage.javascript, undef, UndoModes.ENTIRE_SCRIPT);
+  };
+
+  pub.foo = function() {
+    $.writeln('hello from foo');
+  };
+  pub.go = function() {
+    try {
+      if (typeof glob.setup === 'function') {
+        pub._setup = glob.setup;
+        glob.foo = pub.foo;
+        // glob.setup.foo = pub.foo; // does not work
+
+        // for(p in pub) {
+        //   if (pub.hasOwnProperty(p)) {
+        //     $.writeln('trying to add ' + p + ' to global scope of setup');
+        //     glob.setup[p] = pub[p];
+        //   }
+        // }
+        runSetup();
+      }
+      if (typeof glob.draw === 'function') {
+        pub._draw = glob.draw;
+
+        runDrawOnce();
+      }
+    } catch (e) {
+      alert(e);
+      exit();
+    }
+  };
+
+  init();
+})(this, app);
+
+
+
+function setup() {
+  $.writeln('setup');
+  // b.foo(); // will work
+  foo();
+}
+
+
+function draw() {
+  $.writeln('draw');
+}
+b.go();
