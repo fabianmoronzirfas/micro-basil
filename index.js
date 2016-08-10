@@ -36,7 +36,8 @@
     try {
       if (typeof glob.setup === 'function') {
         pub._setup = glob.setup;
-        glob.foo = pub.foo;
+        // glob.foo = pub.foo;
+        setup.foo = pub.foo;
         // glob.setup.foo = pub.foo; // does not work
 
         // for(p in pub) {
