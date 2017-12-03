@@ -1,16 +1,14 @@
 {
   "name": "micro-basil",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "micro-basil.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "Fabian 'fabiantheblind' Morón Zirfas <fabian.moron.zirfas@gmail.com> (http://fabianmoronzirfas.me)",
-  "license": "ISC",
-  "bin": {
-    "micro-basil": "untitled.js"
-  },
+  "license": "MIT",
+
   "description": "",
   "dependencies": {
     "lodash.assign": "^4.1.0"
